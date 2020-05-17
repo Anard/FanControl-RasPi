@@ -59,38 +59,54 @@ state=0
 while [ 1 ]; do
 	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
 
-	if [ $temp -lt $TEMP_V1 ] && [ $state -gt 0 ]; then
-		echo "Extinction du ventilateur"
-		gpio pwm $FAN_PIN 0
-		state=0
-		timer=60
-	elif [ $temp -lt $TEMP_V2 ] && [ ! $state -eq 1 ]; then
-		echo "Ventilateur à la vitesse 1"
-		gpio pwm $FAN_PIN $PWM_V1
-		state=1
-		timer=30
-	elif [ $temp -lt $TEMP_V3 ] && [ ! $state -eq 2 ]; then
-11		echo "Ventilateur à la vitesse 2"
-		gpio pwm $FAN_PIN $PWM_V2
-		state=2
-		timer=10
-	else
-	    if [ $state -lt 3 ]; then
-		echo "Ventilateur à la vitesse maximale"
-		gpio pwm 1 $PWM_V3
-		timer=5
-		if [ $temp -gt  $TEMP_ALARM ]; then
-			echo "Niveau critique atteint"
-			# activer l'alarme
-			state=4
-		else
-		    if [ $state -eq 4 ]; then
-			# arrêter l'alarme
-			state=3
-		    fi
+	case 1 in
+	    $(($temp -lt $TEMP_V1)))
+		if [ $state -gt 0 ]; then
+			echo "Extinction du ventilateur"
+			gpio pwm $FAN_PIN 0
+			state=0
+			timer=60
 		fi
-	    fi	
-	fi
+		;;
+
+	    $(($temp -lt $TEMP_V2)))
+		if [ ! $state -eq 1 ]; then
+			echo "Ventilateur à la vitesse 1"
+			gpio pwm $FAN_PIN $PWM_V1
+			state=1
+			timer=30
+		fi
+		;;
+
+	    $(($temp -lt $TEMP_V3)))
+		if [ ! $state -eq 2 ]; then
+			echo "Ventilateur à la vitesse 2"
+			gpio pwm $FAN_PIN $PWM_V2
+			state=2
+			timer=10
+		fi
+		;;
+
+	    *)
+
+		if [ $state -lt 3 ]; then
+			echo "Ventilateur à la vitesse maximale"
+			gpio pwm 1 $PWM_V3
+			timer=5
+			if [ $temp -gt  $TEMP_ALARM ]; then
+				echo "Niveau critique atteint"
+				# activer l'alarme
+				state=4
+			else
+			    if [ $state -eq 4 ]; then
+				# arrêter l'alarme
+				state=3
+			    fi
+			fi
+		fi
+		;;
+
+	esac	
 
 	sleep $timer
 done
