@@ -59,7 +59,7 @@ state=0
 while [ 1 ]; do
 	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
 
-	if [ $temp -lt $TEMP_V1 ] && [ $state -gt 0 ]; then
+	if [ $temp -lt $TEMP_V1 ] && [ $state -gt 0 ]; then
 		echo "Extinction du ventilateur"
 		gpio pwm $FAN_PIN 0
 		state=0
@@ -70,7 +70,7 @@ while [ 1 ]; do
 		state=1
 		timer=30
 	elif [ $temp -lt $TEMP_V3 ] && [ ! $state -eq 2 ]; then
-		echo "Ventilateur à la vitesse 2"
+11		echo "Ventilateur à la vitesse 2"
 		gpio pwm $FAN_PIN $PWM_V2
 		state=2
 		timer=10
@@ -80,7 +80,7 @@ while [ 1 ]; do
 		gpio pwm 1 $PWM_V3
 		timer=5
 		if [ $temp -gt  $TEMP_ALARM ]; then
-			echo "Niveau critique atteint : `cputemp`"
+			echo "Niveau critique atteint"
 			# activer l'alarme
 			state=4
 		else
