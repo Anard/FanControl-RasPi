@@ -16,3 +16,4 @@ Possibilité de modifier la configuration (limites de températures CPU, valeurs
 - Implémentation d'un bipper pour créer une alarme en cas de dépassemment d'un niveau critique
 - Allumage de LEDs pour indiquer plus visuellement la vitesse actuelle du ventilateur
 - ET/OU Affichage d'une notification zenity pour les plus hauts paliers
+- Voir à supprimer la boucle infinie pour un appel de fancontrol toutes les x secondes
