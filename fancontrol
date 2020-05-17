@@ -54,13 +54,15 @@ while [ "$#" -gt 0 ]; do
 done
 
 gpio mode $FAN_PIN pwm
+gpio pwm $FAN_PIN 0
 state=0
+timer=60
 
 while [ 1 ]; do
 	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
 
 	case 1 in
-	    $(($temp -lt $TEMP_V1)))
+	    $(($temp<= $TEMP_V1)))
 		if [ $state -gt 0 ]; then
 			echo "Extinction du ventilateur"
 			gpio pwm $FAN_PIN 0
@@ -69,7 +71,7 @@ while [ 1 ]; do
 		fi
 		;;
 
-	    $(($temp -lt $TEMP_V2)))
+	    $(($temp<= $TEMP_V2)))
 		if [ ! $state -eq 1 ]; then
 			echo "Ventilateur à la vitesse 1"
 			gpio pwm $FAN_PIN $PWM_V1
@@ -78,7 +80,7 @@ while [ 1 ]; do
 		fi
 		;;
 
-	    $(($temp -lt $TEMP_V3)))
+	    $(($temp<= $TEMP_V3)))
 		if [ ! $state -eq 2 ]; then
 			echo "Ventilateur à la vitesse 2"
 			gpio pwm $FAN_PIN $PWM_V2
@@ -88,7 +90,6 @@ while [ 1 ]; do
 		;;
 
 	    *)
-
 		if [ $state -lt 3 ]; then
 			echo "Ventilateur à la vitesse maximale"
 			gpio pwm 1 $PWM_V3
