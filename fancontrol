@@ -38,9 +38,9 @@ while [ "$#" -gt 0 ]; do
 
 	"--start"|"-S")
 		# START FAN CONTROL (go to end of script)
-                echo "Démarrage du ventilateur à $TEMP_V1°C à $((102400/$PWM_V1))%"
-                echo "Deuxième vitesse à $TEMP_V2°C à $((102400/$PWM_V2))%"
-                echo "Troisième vitesse à $TEMP_V3°C à $((102400/$PWM_V3))%"
+                echo "Démarrage du ventilateur à $TEMP_V1°C à $((100*$PWM_V1/1024))%"
+                echo "Deuxième vitesse à $TEMP_V2°C à $((100*$PWM_V2/1024))%"
+                echo "Troisième vitesse à $TEMP_V3°C à $((100*$PWM_V3/1024))%"
 		echo "Alarme à $TEMP_ALARM°C"
 		echo
 		;;
