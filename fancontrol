@@ -1,0 +1,75 @@
+#/bin/bash
+# Gestion du ventilateur RapsberryPi en fonction de la température
+configPath="/usr/local/lib"
+source ${configPath}/help.cnf
+source ${configPath}/fancontrol.cnf
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+	"--help"|"-h")
+		# HELP
+		echo "${bold}Script de gestion du ventilateur sur RaspberryPi${normal}"
+		echo "Fichier de configuration : ${configPath}/fancontrol.cnf"
+		echo "Utilisation : fancontrol [OPTION]"
+		echo
+		echo "	${bold}--help|-h	:${normal} Afficher la présente aide"
+		echo "	${bold}--stop|-s	:${normal} Arrêter le ventilateur et le suivi de température CPU"
+		echo "	${bold}--start|-S	:${normal} (comportement par défaut) Démarrer le suivi de température CPU et le ventilateur si nécessaire"
+		echo "	${bold}--restart|-r|-R	=${normal} Arrêter le ventilateur et redémarrer le service"
+		echo
+
+		exit 0
+		;;
+
+	"--stop"|"-s")
+		# STOP FAN AND TEMP CONTROL
+		gpio pwm $FAN_PIN 0
+		gpio mode $FAN_PIN OUT
+		gpio write $FAN_PIN 0
+
+		exit 0
+		;;
+
+	"--restart"|"-r"|"-R")
+		# RESTART FAN CONTROL
+		gpio pwm $FAN_PIN 0
+		# continue to start
+		;;
+
+	"--start"|"-S")
+		# START FAN CONTROL (go to end of script)
+		;;
+
+	*)
+		echo "Commande $1 inconnue, tapez -h pour obtenir de l'aide"
+		exit 0
+		;;
+    esac
+    shift
+done
+
+gpio mode $FAN_PIN pwm
+
+while [ 1 ]; do
+	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
+
+	if [ $temp -lt $TEMP_V1 ]; then
+		gpio pwm 1 0
+		timer=60
+	elif [ $temp -lt $TEMP_V2 ]; then
+		gpio pwm 1 $PWM_V1
+		timer=30
+	elif [ $temp -lt $TEMP_V3 ]; then
+		gpio pwm 1 $PWM_V2
+		timer=10
+	else
+		gpio pwm 1 $PWM_V3
+		timer=5
+#		if [ $temp -gt  $TEMP_ALARM ]; then
+			# activer l'alarme
+#		fi
+	fi
+
+	sleep $timer
+done
+exit 0
