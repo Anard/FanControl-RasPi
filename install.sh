@@ -3,6 +3,16 @@ configPath="/usr/local/lib"
 scriptPath="/usr/local/bin"
 servicePath="/etc/systemd/system"
 
+gpio -v
+if [ $? -gt 0 ]; then
+	echo "L'utilitaire gpio n'est pas installé, tentative d'installation"
+	sudo apt update && sudo apt install gpio
+	if [ $? -gt 0 ]; then
+		echo "Impossible d'installer gpio, consultez la documentation de votre distribution"ù
+		exit 127
+	fi
+fi
+
 echo "Récupération et installation du dépôt HelpSh"
 if [ -d HelpSh ]; then
 	del=0
