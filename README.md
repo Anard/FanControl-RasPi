@@ -17,3 +17,4 @@ Possibilité de modifier la configuration (limites de températures CPU, valeurs
 - Allumage de LEDs pour indiquer plus visuellement la vitesse actuelle du ventilateur
 - ET/OU Affichage d'une notification zenity pour les plus hauts paliers
 - Voir à supprimer la boucle infinie pour un appel de fancontrol toutes les x secondes
+- Implémenter un hystérésis
