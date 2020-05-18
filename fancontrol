@@ -88,7 +88,7 @@ set_fan ()
 			;;
 		3|4)
 			gpio -g pwm $FAN_PIN $PWM_V3
-			if [ newState -eq 4 ]; then
+			if [ newState -eq 4 ] && [ $ALARM_PIN -gt 0 ]; then
 				# activer l'alarme
 				gpio -g write $ALARM_PIN 1
 				sleep 0.5
