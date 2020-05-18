@@ -13,8 +13,7 @@ chmod +x install.sh
 Possibilité de modifier la configuration (limites de températures CPU, valeurs PWM, GPIO utilisé pour le ventilateur) en modifiant le fichier fancontrol.cnf
 
 ## TODO
-- Implémentation d'un bipper pour créer une alarme en cas de dépassemment d'un niveau critique
+- Tester l'implémentation du bipper
 - Allumage de LEDs pour indiquer plus visuellement la vitesse actuelle du ventilateur
 - ET/OU Affichage d'une notification zenity pour les plus hauts paliers
 - Voir à supprimer la boucle infinie pour un appel de fancontrol toutes les x secondes
-- Implémenter un hystérésis
