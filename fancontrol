@@ -3,6 +3,12 @@
 configPath="/usr/local/lib"
 source ${configPath}/help.cnf
 source ${configPath}/fancontrol.cnf
+# cut floating point
+TEMP_V1=${TEMP_V1#*.}
+TEMP_V2=${TEMP_V2#*.}
+TEMP_V3=${TEMP_V3#*.}
+TEMP_ALARM=${TEMP_ALARM#*.}
+HYST=${HYST#*.}
 
 DEBUG=0
 
@@ -60,6 +66,49 @@ while [ "$#" -gt 0 ]; do
     shift
 done
 
+set_fan ()
+{
+	if [ ! $# -eq 1 ]; then
+		return 127
+	fi
+	newState=$1
+	case $newState in
+		0)
+			gpio pwm $FAN_PIN 0
+			timer=60
+			;;
+		1)
+			gpio pwm $FAN_PIN $PWM_V1
+			timer=30
+			;;
+		2)
+			gpio pwm $FAN_PIN $PWM_V2
+			timer=10
+			;;
+		3|4)
+			gpio pwm $FAN_PIN $PWM_V3
+			timer=5
+			if [ newState -eq 4 ]; then
+				# activer l'alarme
+				gpio write $ALARM_PIN 1
+			else
+				# eteindre l'alarme
+				gpio write $ALARM_PIN 0
+			fi
+			;;
+		*)
+			return 127
+			;;
+	esac
+	
+	state=$newState
+	if [ $state -gt 0 ]; then
+		echo "Ventilateur à la vitesse $state"
+	else echo "Extinction du ventilateur"
+	fi
+	return 0
+}
+
 if [ $DEBUG -gt 0 ]; then
 	echo "Initialisation du ventilateur à la pin $FAN_PIN"
 	echo "Vitesse nulle"
@@ -76,57 +125,82 @@ while [ 1 ]; do
 		echo "Actuellement sur la vitesse $state"
 	fi
 
-	case 1 in
-	    $(($temp<= $TEMP_V1)))
-		if [ $state -gt 0 ]; then
-			echo "Extinction du ventilateur"
-			gpio pwm $FAN_PIN 0
-			state=0
-			timer=60
-		fi
-		;;
-
-	    $(($temp<= $TEMP_V2)))
-		if [ ! $state -eq 1 ]; then
-			echo "Ventilateur à la vitesse 1"
-			gpio pwm $FAN_PIN $PWM_V1
-			state=1
-			timer=30
-		fi
-		;;
-
-	    $(($temp<= $TEMP_V3)))
-		if [ ! $state -eq 2 ]; then
-			echo "Ventilateur à la vitesse 2"
-			gpio pwm $FAN_PIN $PWM_V2
-			state=2
-			timer=10
-		fi
-		;;
-
-	    *)
-		if [ $state -lt 3 ]; then
-			echo "Ventilateur à la vitesse maximale"
-			gpio pwm 1 $PWM_V3
-			timer=5
-			if [ $temp -gt  $TEMP_ALARM ]; then
-				echo "Niveau critique atteint"
-				# activer l'alarme
-				state=4
-			else
-			    if [ $state -eq 4 ]; then
-				# arrêter l'alarme
-				state=3
-			    fi
+	minusTemp=$(($temp-$HYST))
+	majorTemp=$(($temp+$HYST))
+	case $state in
+		0)
+			if [ $minusTemp -lt $TEMP_V1 ]; then
+				;;
+			elif [ $minusTemp -lt $TEMP_V2 ]; then
+				set_fan 1
+			elif [ $minusTemp -lt $TEMP_V3 ]; then
+				set_fan 2
+			elif [ $minusTemp -lt $TEMP_ALARM ]; then
+				set_fan 3
+			else set_fan 4
 			fi
-		fi
-		;;
+			;;
+			
+		1)
+			if [ $majorTemp -lt $TEMP_V1 ]; then
+				set_fan 0
+			elif [ $minusTemp -lt $TEMP_V2 ]; then
+				;;
+			elif [ $minusTemp -lt $TEMP_V3 ]; then
+				set_fan 2
+			elif [ $minusTemp -lt $TEMP_ALARM ]; then
+				set_fan 3
+			else set_fan 4
+			fi
+			;;
+			
+		2)
+			if [ $majorTemp -lt $TEMP_V1 ]; then
+				set_fan 0
+			elif [ $majorTemp -lt $TEMP_V2 ]; then
+				set_fan 1
+			elif [ $minusTemp -lt $TEMP_V3 ]; then
+				;;
+			elif [ $minusTemp -lt $TEMP_ALARM ]; then
+				set_fan 3
+			else set_fan 4
+			fi
+			;;
 
+		3)
+			if [ $majorTemp -lt $TEMP_V1 ]; then
+				set_fan 0
+			elif [ $majorTemp -lt $TEMP_V2 ]; then
+				set_fan 1
+			elif [ $majorTemp -lt $TEMP_V3 ]; then
+				set_fan 2
+			elif [ $minusTemp -lt $TEMP_ALARM ]; then
+				;;
+			else set_fan 4
+			fi
+			;;
+			
+		4)
+			if [ $majorTemp -lt $TEMP_V1 ]; then
+				set_fan 0
+			elif [ $majorTemp -lt $TEMP_V2 ]; then
+				set_fan 1
+			elif [ $majorTemp -lt $TEMP_V3 ]; then
+				set_fan 2
+			elif [ $majorTemp -lt $TEMP_ALARM ]; then
+				set_fan 3
+			fi
+			;;
+		
+		*)
+			set_fan 4
+			;;
 	esac
 
 	if [ $DEBUG -gt 0 ]; then
 		echo "Prochaine mesure dans ${timer}s..."
 	fi
+	
 	sleep $timer
 done
 exit 0

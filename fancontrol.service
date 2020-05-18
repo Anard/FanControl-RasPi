@@ -3,7 +3,7 @@ Description=Suivi de la température CPU et gestion du ventilateur
 After=multi-user.target
 
 [Service]
-ExecStart=/bin/bash -c '/usr/local/bin/fancontrol -S'
+ExecStart=/bin/bash -c '/usr/local/bin/fancontrol -d -S'
 ExecStop=/bin/bash -c '/usr/local/bin/fancontrol -s'
 ExecReload=/bin/bash -c '/usr/local/bin/fancontrol -r'
 
