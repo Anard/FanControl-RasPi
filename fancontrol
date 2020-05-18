@@ -1,8 +1,10 @@
-#/bin/bash
+#!/bin/bash
 # Gestion du ventilateur RapsberryPi en fonction de la température
 configPath="/usr/local/lib"
 source ${configPath}/help.cnf
 source ${configPath}/fancontrol.cnf
+
+DEBUG=0
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -13,12 +15,17 @@ while [ "$#" -gt 0 ]; do
 		echo "Utilisation : fancontrol [OPTION]"
 		echo
 		echo "	${bold}--help|-h	:${normal} Afficher la présente aide"
+		echo "	${bold}--debug|-d	:${normal} Mode de debuggage"
 		echo "	${bold}--stop|-s	:${normal} Arrêter le ventilateur et le suivi de température CPU"
 		echo "	${bold}--start|-S	:${normal} (comportement par défaut) Démarrer le suivi de température CPU et le ventilateur si nécessaire"
 		echo "	${bold}--restart|-r|-R	=${normal} Arrêter le ventilateur et redémarrer le service"
 		echo
 
 		exit 0
+		;;
+
+	"-debug"|"-d")
+		DEBUG=1
 		;;
 
 	"--stop"|"-s")
@@ -53,6 +60,10 @@ while [ "$#" -gt 0 ]; do
     shift
 done
 
+if [ $DEBUG -gt 0 ]; then
+	echo "Initialisation du ventilateur à la pin $FAN_PIN"
+	echo "Vitesse nulle"
+fi
 gpio mode $FAN_PIN pwm
 gpio pwm $FAN_PIN 0
 state=0
@@ -60,6 +71,10 @@ timer=60
 
 while [ 1 ]; do
 	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
+	echo "Température actuelle : ${temp}°C"
+	if [ $DEBUG -gt 0 ]; then
+		echo "Actuellement sur la vitesse $state"
+	fi
 
 	case 1 in
 	    $(($temp<= $TEMP_V1)))
@@ -107,8 +122,11 @@ while [ 1 ]; do
 		fi
 		;;
 
-	esac	
+	esac
 
+	if [ $DEBUG -gt 0 ]; then
+		echo "Prochaine mesure dans ${timer}s..."
+	fi
 	sleep $timer
 done
 exit 0

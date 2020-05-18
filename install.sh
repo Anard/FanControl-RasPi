@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 configPath="/usr/local/lib"
 scriptPath="/usr/local/bin"
 servicePath="/etc/systemd/system"
