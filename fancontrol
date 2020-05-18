@@ -189,7 +189,7 @@ while [ 1 ]; do
 				set_fan 2
 			elif [ $majorTemp -lt $TEMP_ALARM ]; then
 				set_fan 3
-			elif [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
+			elif [ $DEBUG -gt 0 ]; then echo "Pas de changement";
 			fi
 			;;
 		
