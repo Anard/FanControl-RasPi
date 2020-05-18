@@ -130,7 +130,7 @@ while [ 1 ]; do
 	case $state in
 		0)
 			if [ $minusTemp -lt $TEMP_V1 ]; then
-				;;
+				if [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
 			elif [ $minusTemp -lt $TEMP_V2 ]; then
 				set_fan 1
 			elif [ $minusTemp -lt $TEMP_V3 ]; then
@@ -145,7 +145,7 @@ while [ 1 ]; do
 			if [ $majorTemp -lt $TEMP_V1 ]; then
 				set_fan 0
 			elif [ $minusTemp -lt $TEMP_V2 ]; then
-				;;
+				if [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
 			elif [ $minusTemp -lt $TEMP_V3 ]; then
 				set_fan 2
 			elif [ $minusTemp -lt $TEMP_ALARM ]; then
@@ -160,7 +160,7 @@ while [ 1 ]; do
 			elif [ $majorTemp -lt $TEMP_V2 ]; then
 				set_fan 1
 			elif [ $minusTemp -lt $TEMP_V3 ]; then
-				;;
+				if [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
 			elif [ $minusTemp -lt $TEMP_ALARM ]; then
 				set_fan 3
 			else set_fan 4
@@ -175,7 +175,7 @@ while [ 1 ]; do
 			elif [ $majorTemp -lt $TEMP_V3 ]; then
 				set_fan 2
 			elif [ $minusTemp -lt $TEMP_ALARM ]; then
-				;;
+				if [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
 			else set_fan 4
 			fi
 			;;
@@ -189,11 +189,13 @@ while [ 1 ]; do
 				set_fan 2
 			elif [ $majorTemp -lt $TEMP_ALARM ]; then
 				set_fan 3
+			elif [ $DEBUG -gt 0 ]; then echo "Pas de changement"; fi
 			fi
 			;;
 		
 		*)
-			set_fan 4
+			if [ $DEBUG -gt 0 ]; then echo "Etat inconnu, vitesse maximale par sécurité"; fi
+			set_fan 3
 			;;
 	esac
 
