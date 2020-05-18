@@ -88,13 +88,14 @@ set_fan ()
 			;;
 		3|4)
 			gpio pwm $FAN_PIN $PWM_V3
-			timer=5
 			if [ newState -eq 4 ]; then
 				# activer l'alarme
 				gpio write $ALARM_PIN 1
-			else
-				# eteindre l'alarme
+				sleep 0.5
 				gpio write $ALARM_PIN 0
+				timer=1
+			else
+				timer=5
 			fi
 			;;
 		*)
@@ -181,7 +182,7 @@ while [ 1 ]; do
 			fi
 			;;
 			
-		4)
+		*)
 			if [ $majorTemp -lt $TEMP_V1 ]; then
 				set_fan 0
 			elif [ $majorTemp -lt $TEMP_V2 ]; then
@@ -190,13 +191,8 @@ while [ 1 ]; do
 				set_fan 2
 			elif [ $majorTemp -lt $TEMP_ALARM ]; then
 				set_fan 3
-			elif [ $DEBUG -gt 0 ]; then echo "Pas de changement";
+			else	set_fan 4
 			fi
-			;;
-		
-		*)
-			if [ $DEBUG -gt 0 ]; then echo "Etat inconnu, vitesse maximale par sécurité"; fi
-			set_fan 3
 			;;
 	esac
 
