@@ -5,7 +5,7 @@ ALARM_PIN=0	# 0 to deactivate
 TEMP_V1=41
 TEMP_V2=50
 TEMP_V3=60
-TEMP_ALARM=70
+TEMP_ALARM=75
 # Hysteresis
 HYST=1
 # Fan's PWM values for each level
