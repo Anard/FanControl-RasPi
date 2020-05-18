@@ -36,16 +36,16 @@ while [ "$#" -gt 0 ]; do
 
 	"--stop"|"-s")
 		# STOP FAN AND TEMP CONTROL
-		gpio pwm $FAN_PIN 0
-		gpio mode $FAN_PIN OUT
-		gpio write $FAN_PIN 0
+		gpio -g pwm $FAN_PIN 0
+		gpio -g mode $FAN_PIN OUT
+		gpio -g write $FAN_PIN 0
 
 		exit 0
 		;;
 
 	"--restart"|"-r"|"-R")
 		# RESTART FAN CONTROL
-		gpio pwm $FAN_PIN 0
+		gpio -g pwm $FAN_PIN 0
 		# continue to start
 		;;
 
@@ -75,24 +75,24 @@ set_fan ()
 	newState=$1
 	case $newState in
 		0)
-			gpio pwm $FAN_PIN 0
+			gpio -g pwm $FAN_PIN 0
 			timer=60
 			;;
 		1)
-			gpio pwm $FAN_PIN $PWM_V1
+			gpio -g pwm $FAN_PIN $PWM_V1
 			timer=30
 			;;
 		2)
-			gpio pwm $FAN_PIN $PWM_V2
+			gpio -g pwm $FAN_PIN $PWM_V2
 			timer=10
 			;;
 		3|4)
-			gpio pwm $FAN_PIN $PWM_V3
+			gpio -g pwm $FAN_PIN $PWM_V3
 			if [ newState -eq 4 ]; then
 				# activer l'alarme
-				gpio write $ALARM_PIN 1
+				gpio -g write $ALARM_PIN 1
 				sleep 0.5
-				gpio write $ALARM_PIN 0
+				gpio -g write $ALARM_PIN 0
 				timer=1
 			else
 				timer=5
@@ -115,8 +115,8 @@ if [ $DEBUG -gt 0 ]; then
 	echo "Initialisation du ventilateur à la pin $FAN_PIN"
 	echo "Vitesse nulle"
 fi
-gpio mode $FAN_PIN pwm
-gpio pwm $FAN_PIN 0
+gpio -g mode $FAN_PIN pwm
+gpio -g pwm $FAN_PIN 0
 state=0
 timer=60
 

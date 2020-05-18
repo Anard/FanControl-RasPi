@@ -1,6 +1,6 @@
-# WiringPi's pins
-FAN_PIN=1
-ALARM_PIN=2
+# GPIO pins
+FAN_PIN=18
+ALARM_PIN=0	# 0 to deactivate
 # CPU Temperature levels
 TEMP_V1=41
 TEMP_V2=50
