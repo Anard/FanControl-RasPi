@@ -123,7 +123,7 @@ if [ $ALARM_PIN -gt 0 ]; then
 	gpio -g $ALARM_PIN out
 	gpio -g write $ALARM_PIN 0
 fi
-# First wait a minute
+# First wait a minute for PWM clock
 sleep $timer
 gpio -g mode $FAN_PIN pwm
 gpio -g pwm $FAN_PIN 0
