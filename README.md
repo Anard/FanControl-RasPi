@@ -10,7 +10,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Possibilité de modifier la configuration (limites de températures CPU, valeurs PWM, GPIO utilisé pour le ventilateur) en modifiant le fichier fancontrol.cnf
+Possibilité de modifier la configuration (limites de températures CPU et hystérésis, valeurs PWM du ventilateur, GPIO utilisés pour le ventilateur et l'alame) en modifiant le fichier fancontrol.cnf
 
 ## TODO
 - Tester l'implémentation du bipper
