@@ -54,7 +54,7 @@ while [ "$#" -gt 0 ]; do
 			echo "Démarrage du ventilateur à $((100*$PWM_V1/1024))% pour $TEMP_V1°C"
 			echo "Deuxième vitesse à $((100*$PWM_V2/1024))% pour $TEMP_V2°C"
 			echo "Troisième vitesse à $((100*$PWM_V3/1024))% pour $TEMP_V3°C"
-		else echo "Démarrage du ventilater à $TEMP_V2°C"
+		else echo "Démarrage du ventilateur à $TEMP_V2°C"
 		fi
 		echo "Alarme à $TEMP_ALARM°C"
 		echo "Hystérésis de +/- $HYST°C"
