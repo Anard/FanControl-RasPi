@@ -18,3 +18,5 @@ Possibilité de modifier la configuration (limites de températures CPU et hyst�
 - ET/OU Affichage d'une notification zenity pour les plus hauts paliers
 - Voir à supprimer la boucle infinie pour un appel de fancontrol toutes les x secondes
 - Voir à autoriser un passage à la vitesse supérieure sans modification de la température pendant x secondes
+- Le Mode 0 (On/Off) est utilisé car en sortie jack, le son se coupe à chaque changement de vitesse du ventilateur. Voir si ça ne peut pas être réglé autrement
+
