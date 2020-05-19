@@ -115,10 +115,18 @@ if [ $DEBUG -gt 0 ]; then
 	echo "Initialisation du ventilateur à la pin $FAN_PIN"
 	echo "Vitesse nulle"
 fi
-gpio -g mode $FAN_PIN pwm
-gpio -g pwm $FAN_PIN 0
 state=0
 timer=60
+gpio -g mode $FAN_PIN out
+gpio -g write $FAN_PIN 0
+if [ $ALARM_PIN -gt 0 ]; then
+	gpio -g $ALARM_PIN out
+	gpio -g write $ALARM_PIN 0
+fi
+# First wait a minute
+sleep $timer
+gpio -g mode $FAN_PIN pwm
+gpio -g pwm $FAN_PIN 0
 
 while [ 1 ]; do
 	temp=$(($(</sys/class/thermal/thermal_zone0/temp)/1000))
