@@ -79,23 +79,23 @@ set_fan ()
 		0)
 			if [ $FAN_MODE -gt 0 ]; then
 				gpio -g pwm $FAN_PIN 0
-				timer=60
 			else gpio -g write $FAN_PIN 0
 			fi
+			timer=60
 			;;
 		1)
 			if [ $FAN_MODE -gt 0 ]; then
 				gpio -g pwm $FAN_PIN $PWM_V1
-				timer=30
 			else gpio -g write $FAN_PIN 0
 			fi
+			timer=30
 			;;
 		2)
 			if [ $FAN_MODE -gt 0 ]; then
 				gpio -g pwm $FAN_PIN $PWM_V2
-				timer=10
 			else gpio -g write $FAN_PIN 1
 			fi
+			timer=10
 			;;
 		3|4)
 			if [ $FAN_MODE -gt 0 ]; then

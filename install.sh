@@ -34,6 +34,7 @@ if [ $del -gt 0 ]; then
 	sudo rm -r HelpSh
 fi
 
+source ${configPath}/help.cnf
 echo "Installation de FanControl"
 sudo cp *.cnf ${configPath}/
 ret=$?; if [ $ret -gt 0 ]; then echo "Une erreur est survenue lors de la copie des fichiers"; exit $ret; fi
@@ -48,6 +49,6 @@ ret=$?; if [ $ret -gt 0 ]; then echo "Une erreur est survenue lors du démarrage
 
 echo "Service fancontrol installé avec succès"
 echo "Vous pouvez modifier la configuration dans ${configPath}/fancontrol.cnf"
-echo "Redémarrez le système ou démarrer le contrôle avec ${orange}sudo systemctl (re)start fancontrol${nocolor}"
+echo "Redémarrez le système ou démarrer le contrôle avec ${bold}sudo systemctl (re)start fancontrol${normal}"
 
 exit 0
