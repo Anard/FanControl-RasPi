@@ -1,7 +1,7 @@
 #!/bin/bash
 # Gestion du ventilateur RapsberryPi en fonction de la température
 configPath="/usr/local/lib"
-source /usr/lib/help.cnf
+source /usr/lib/shell-text.cnf
 source ${configPath}/fancontrol.cnf
 # cut floating point
 TEMP_V1=${TEMP_V1#*.}
